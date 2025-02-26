@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ClothCastLogo from '../../assets/logo.png';
 import PageContainer from "../../components/common/PageContainer";
+import Button from "../../components/common/Button";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const HomePage: React.FC = () => {
         <Logo src={ClothCastLogo} alt="ClothCast Logo" />
         <Title>ClothCast</Title>
         <Subtitle>날씨에 맞는 옷차림을 추천해드릴게요!</Subtitle>
-        <StartButton onClick={() => navigate("/survey")}>시작하기</StartButton>
+        <Button onClick={() => navigate("/survey")}>시작하기</Button>
       </Content>
     </PageContainer>
   );
@@ -41,19 +42,4 @@ const Subtitle = styled.p`
   font-size: 16px;
   color: #333;
   margin-bottom: 24px;
-`;
-
-const StartButton = styled.button`
-  background-color: #4a90e2;
-  color: white;
-  font-size: 16px;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #357ac9;
-  }
 `;
