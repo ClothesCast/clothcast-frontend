@@ -1,34 +1,26 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ClothCastLogo from '../../assets/logo.png';
+import PageContainer from "../../components/common/PageContainer";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Container>
+    <PageContainer>
       <Content>
         <Logo src={ClothCastLogo} alt="ClothCast Logo" />
         <Title>ClothCast</Title>
         <Subtitle>날씨에 맞는 옷차림을 추천해드릴게요!</Subtitle>
         <StartButton onClick={() => navigate("/survey")}>시작하기</StartButton>
       </Content>
-    </Container>
+    </PageContainer>
   );
 };
 
 export default HomePage;
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 40px);
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0.2rem;
-`;
+
 
 const Content = styled.div`
   text-align: center;
