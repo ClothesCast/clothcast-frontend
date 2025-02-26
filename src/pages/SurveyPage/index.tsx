@@ -1,76 +1,133 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "../../assets/logo.png";
 
 const SurveyPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>("상의");
-  const [selectedClothes, setSelectedClothes] = useState<string[]>([]);
+    const navigate = useNavigate();
+    const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string>("상의");
+  
+    const styles = [
+      { label: "스트릿", value: "street" },
+      { label: "캐주얼", value: "casual" },
+      { label: "댄디", value: "dandy" },
+      { label: "페미닌", value: "feminine" },
+    ];
+  
+    const categories = [
+      { label: "아우터", value: "outerwear" },
+      { label: "상의", value: "topwear" },
+      { label: "하의", value: "bottomwear" },
+      { label: "신발", value: "shoes" },
+    ];
+  
+    const clothes = {
+      상의: ["셔츠", "니트", "맨투맨", "후드티"],
+      아우터: ["가죽자켓", "코트", "숏패딩","롱패딩", "가디건", "후드집업"],
+      하의: ["청바지", "슬랙스", "반바지", "코튼바지","숏치마","롱치마"],
+      신발: ["스니커즈","운동화", "샌달", "로퍼", "부츠"]
+    };
+  
+    const clothesMapping: Record<string,string> = {
+      셔츠: "shirt",
+      니트: "knit",
+      맨투맨: "mantoman",
+      후드티: "hoodt",
+      가죽자켓: "leatherJacket",
+      코트: "coat",
+      숏패딩: "shortPadding",
+      롱패딩: "longPadding",
+      가디건: "cardigan",
+      후드집업: "hoodZipUp",
+      청바지: "denimPants",
+      슬랙스: "slacks",
+      코튼바지:"cottonPants",
+      반바지: "shortPants",
+      숏치마: "miniSkirt",
+      롱치마: "longSkirt",
+      스니커즈: "sneakers",
+      운동화: "sportsShoes",
+      샌달: "sandals",
+      로퍼: "loafers",
+      부츠: "boots",
+    };
 
-  const styles = ["스트릿", "캐주얼", "댄디", "페미닌"];
-  const categories = ["아우터", "상의", "하의", "신발"];
-  const clothes = {
-    상의: ["셔츠", "니트", "맨투맨", "후드티"],
-    아우터: ["자켓", "코트", "패딩"],
-    하의: ["청바지", "슬랙스", "반바지"],
-    신발: ["운동화", "로퍼", "부츠"]
-  };
-
-  const toggleClothesSelection = (item: string) => {
-    setSelectedClothes((prev) =>
-      prev.includes(item) ? prev.filter((c) => c !== item) : [...prev, item]
+    const initialOwnedClothes = Object.fromEntries(
+      categories.map(({ label, value }) => [
+        value,
+        Object.fromEntries(clothes[label as keyof typeof clothes].map((item) => [clothesMapping[item], false]))
+      ])
+    );
+  
+    const [ownedClothes, setOwnedClothes] = useState<{ [key: string]: { [key: string]: boolean } }>(
+      initialOwnedClothes
+    );
+  
+    const toggleClothesSelection = (category: string, item: string) => {
+      setOwnedClothes((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [clothesMapping[item]]: !prev[category]?.[clothesMapping[item]],
+        },
+      }));
+    };
+  
+    const handleSubmit = () => {
+      const requestData = {
+        style: selectedStyle ? styles.find((s) => s.label === selectedStyle)?.value : null,
+        owned_clothes: ownedClothes,
+      };
+      console.log("Final Data to Send:", requestData);
+      navigate("/map", { state: requestData });
+    };
+  
+    return (
+      <Container>
+        <Content>
+          <Title>WearCast</Title>
+          <Question>어떤 스타일을 원하시나요?</Question>
+          <ButtonGroup>
+            {styles.map(({ label }) => (
+              <Button
+                key={label}
+                onClick={() => setSelectedStyle(label)}
+                selected={selectedStyle === label}
+              >
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+  
+          <Question>당신의 옷장에는 어떤 옷이 있나요?</Question>
+          <TabContainer>
+            {categories.map(({ label}) => (
+              <TabButton
+                key={label}
+                onClick={() => setSelectedCategory(label)}
+                selected={selectedCategory === label}
+              >
+                {label}
+              </TabButton>
+            ))}
+          </TabContainer>
+          <ButtonGroup>
+            {clothes[selectedCategory as keyof typeof clothes].map((item) => (
+              <Button
+                key={item}
+                onClick={() => toggleClothesSelection(categories.find((c) => c.label === selectedCategory)?.value || "", item)}
+                selected={ownedClothes[categories.find((c) => c.label === selectedCategory)?.value || ""]?.[clothesMapping[item]] || false}
+              >
+                {item}
+              </Button>
+            ))}
+          </ButtonGroup>
+  
+          <SubmitButton onClick={handleSubmit}>완료</SubmitButton>
+        </Content>
+      </Container>
     );
   };
-
-  return (
-    <Container>
-      <Content>
-        <img src={Logo} width={80} height={60} />
-        <Title>WearCast</Title>
-        <Question>어떤 <strong>스타일</strong>을 원하시나요?</Question>
-        <ButtonGroup>
-          {styles.map((style) => (
-            <Button
-              key={style}
-              onClick={() => setSelectedStyle(style)}
-              selected={selectedStyle === style}
-            >
-              {style}
-            </Button>
-          ))}
-        </ButtonGroup>
-
-        <Question>당신의 <strong>옷장</strong>에는 어떤 옷이 있나요?</Question>
-        <TabContainer>
-          {categories.map((category) => (
-            <TabButton
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              selected={selectedCategory === category}
-            >
-              {category}
-            </TabButton>
-          ))}
-        </TabContainer>
-
-        <ButtonGroup>
-          {clothes[selectedCategory as keyof typeof clothes].map((item) => (
-            <Button
-              key={item}
-              onClick={() => toggleClothesSelection(item)}
-              selected={selectedClothes.includes(item)}
-            >
-              {item}
-            </Button>
-          ))}
-        </ButtonGroup>
-        <SubmitButton onClick={() => navigate("/map")}>완료</SubmitButton>
-      </Content>
-    </Container>
-  );
-};
 
 export default SurveyPage;
 
@@ -143,7 +200,7 @@ const TabButton = styled.button<{ selected: boolean }>`
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   transition: background-color 0.3s;
-  border-bottom: ${({ selected }) => (selected ? "2px solid #4a90e2" : "none")};
+  border-bottom: ${({ selected }) => (selected ? "3px solid #4a90e2" : "none")};
 
   &:hover {
     background-color: #357ac9;
