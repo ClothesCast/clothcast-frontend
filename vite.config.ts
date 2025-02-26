@@ -15,8 +15,5 @@ export default defineConfig({
       replacement: path.resolve(__dirname,"src/components")
     }
   ]
-  },
-  define: {
-    "import.meta.env.VITE_GOOGLE_MAPS_API_KEY": `"${process.env.VITE_GOOGLE_MAPS_API_KEY}"`,
-  },
-})
+  }
+});
