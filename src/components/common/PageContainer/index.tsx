@@ -8,6 +8,7 @@ const PageContainer = styled.div`
   max-width: 600px;
   margin: 0 auto;
   padding: 0.2rem;
+  flex-direction: column;
 `;
 
 export default PageContainer
