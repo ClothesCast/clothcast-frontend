@@ -1,7 +1,7 @@
 import Lottie from "lottie-react";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"
-import loadingAnimation from '../../assets/loading.json'
+import loadingAnimation from '../../assets/loading2.json'
 import PageContainer from "../../components/common/PageContainer";
 import axios from "axios";
 
