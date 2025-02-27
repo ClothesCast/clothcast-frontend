@@ -3,7 +3,6 @@ import styled from "styled-components";
 import PageContainer from "../../components/common/PageContainer";
 import resultData from '../../temp/responseData.json';
 import Button from "../../components/common/Button";
-import SkyWeather from "../../assets/sky_weather.png";
 
 const ResultPage: React.FC = () => {
   //const [resultData, setResultData] = useState(MockResultData)
@@ -14,7 +13,6 @@ const ResultPage: React.FC = () => {
       <Card>
         {resultData &&
         <>
-          <WeatherImage src={SkyWeather} alt="Weather" height={180} />
           <Recommendation>
             <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
           </Recommendation>
@@ -52,12 +50,6 @@ const Card = styled.div`
   max-width: 500px;
   text-align: center;
 `;
-
-const WeatherImage = styled.img`
-  width: 100%;
-  border-radius: 8px;
-`;
-
 
 const Recommendation = styled.p`
   font-size: 18px;
