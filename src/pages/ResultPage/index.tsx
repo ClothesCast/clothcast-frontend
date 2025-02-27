@@ -43,7 +43,11 @@ const ResultPage: React.FC = () => {
               <RecommendationBox>{formattedRecommendationWithBreaks}</RecommendationBox>
             </>
           )}
+          <div style={{textAlign: "center"}}>
+
           <Button onClick={() => window.location.href = '/'}>돌아가기</Button>
+          </div>
+        
         </Card>
       </Container>
     </PageContainer>
