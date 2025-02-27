@@ -28,7 +28,16 @@ jobs:
           username: ${{ secrets.DEV_SERVER_USER }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
+            cd /home/ubuntu/app-frontend
+
+            # .env 파일 자동 생성
+            echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" > .env
+            
+            # 기존 컨테이너 중지 및 삭제
             docker stop clothcast-frontend || true
             docker rm clothcast-frontend || true
-            docker run -d --name clothcast-frontend -p 3000:80 ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest || true
+
+            # 최신 이미지 Pull 후 실행
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
+            docker run -d --name clothcast-frontend -p 3000:80 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
