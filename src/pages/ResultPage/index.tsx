@@ -19,6 +19,7 @@ const ResultPage: React.FC = () => {
             <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
           </Recommendation>
           <RecommendationBox>
+          대한민국 서울특별시는 20도, 날씨는 맑음입니다 ☀️ 캐주얼 스타일링으로는 카디건, 셔츠, 청바지, 스니커즈를 매치하면 좋을 것 같아요!
             {resultData.recommendation}
           </RecommendationBox>
           {/* <Actions>
