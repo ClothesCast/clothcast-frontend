@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Decode SSH Private Key  # ✅ SSH 키를 안전하게 디코딩
-        run: echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > private_key && chmod 600 private_key
+        run: echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" | base64 --decode > private_key && chmod 600 private_key
 
       - name: SSH and Deploy to Dev Server
         uses: appleboy/ssh-action@v0.1.10
@@ -85,6 +85,6 @@ jobs:
             echo "Pulling latest image..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
 
-            echo "Running new container on port 3000..."
-            docker run -d --name clothcast-frontend -p 3000:80 \
+            echo "Running new container on port 80..."
+            docker run -d --name clothcast-frontend -p 80:80 \
               ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
