@@ -23,7 +23,7 @@ const SurveyPage: React.FC = () => {
     ];
   
     const clothes = {
-      상의: ["셔츠", "니트", "맨투맨", "후드티"],
+      상의: ["셔츠", "니트", "맨투맨", "후드티","반팔티","나시"],
       아우터: ["가죽자켓", "코트", "숏패딩","롱패딩", "가디건", "후드집업"],
       하의: ["청바지", "슬랙스", "반바지", "코튼바지","숏치마","롱치마"],
       신발: ["스니커즈","운동화", "샌달", "로퍼", "부츠"]
@@ -37,6 +37,8 @@ const SurveyPage: React.FC = () => {
       가죽자켓: "leatherJacket",
       코트: "coat",
       숏패딩: "shortPadding",
+      나시: "sleevelessT",
+      반팔티: "shortSleeveT",
       롱패딩: "longPadding",
       가디건: "cardigan",
       후드집업: "hoodZipUp",
@@ -188,7 +190,6 @@ const TabContainer = styled.div`
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
-  border-bottom: 2px solid #ccc;
   padding-bottom: 10px;
 `;
 
@@ -201,7 +202,7 @@ const TabButton = styled.button<{ selected: boolean }>`
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   transition: background-color 0.3s;
-  border-bottom: ${({ selected }) => (selected ? "3px solid #4a90e2" : "none")};
+  border-bottom: 1px solid #4a90e2;
 
   &:hover {
     background-color: #357ac9;
