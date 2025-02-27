@@ -3,16 +3,16 @@ name: CI/CD for ClothesCast Frontend
 on:
   push:
     branches:
-      - dev  #  dev 브랜치에 push될 때 실행
+      - dev  # dev 브랜치에 push될 때 실행
 
 jobs:
-  build-and-test:
-    name: Build & Test
+  build:
+    name: Build Frontend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -20,11 +20,10 @@ jobs:
           node-version: 18
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Project
-        run: npm run build
+      - name: Install Dependencies & Build
+        run: |
+          npm ci  # npm install보다 빠름
+          npm run build
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -34,7 +33,7 @@ jobs:
 
   docker:
     name: Build & Push Docker Image
-    needs: build-and-test
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1  #  Buildx 활성화
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -51,16 +50,17 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64, linux/arm64  # 멀티 플랫폼 빌드 지원
+          platforms: linux/amd64  # 단일 플랫폼으로 최적화
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:dev
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
+          cache-to: type=inline  # 빌드 캐싱 적용
 
   deploy:
     name: Deploy to Dev Server
@@ -71,17 +71,12 @@ jobs:
       - name: SSH and Deploy to Dev Server
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.DEV_SERVER_HOST }}  # 개발 서버용 SSH 정보
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.DEV_SERVER_USER }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
           script: |
-            echo "Stopping existing container..."
             docker stop clothcast-frontend || true
             docker rm clothcast-frontend || true
-
-            echo "Pulling latest image..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
-
-            echo "Running new container on port 3000..."
-            docker run -d --name clothcast-frontend -p 3000:3000 \
+            docker run -d --name clothcast-frontend -p 3000:80 \
               ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
