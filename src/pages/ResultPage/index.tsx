@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import PageContainer from "../../components/common/PageContainer";
-import resultData from '../../temp/responseData.json';
+//import resultData from '../../temp/responseData.json';
 import Button from "../../components/common/Button";
-import SkyWeather from "../../assets/sky_weather.png";
+import { useLocation } from "react-router-dom";
 
 const ResultPage: React.FC = () => {
   //const [resultData, setResultData] = useState(MockResultData)
+  const location = useLocation(); 
+  const resultData = location.state;
 
   return (
     <PageContainer>
@@ -14,12 +16,10 @@ const ResultPage: React.FC = () => {
       <Card>
         {resultData &&
         <>
-          <WeatherImage src={SkyWeather} alt="Weather" height={180} />
           <Recommendation>
             <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
           </Recommendation>
           <RecommendationBox>
-          대한민국 서울특별시는 20도, 날씨는 맑음입니다 ☀️ 캐주얼 스타일링으로는 카디건, 셔츠, 청바지, 스니커즈를 매치하면 좋을 것 같아요!
             {resultData.recommendation}
           </RecommendationBox>
           {/* <Actions>
@@ -52,12 +52,6 @@ const Card = styled.div`
   max-width: 500px;
   text-align: center;
 `;
-
-const WeatherImage = styled.img`
-  width: 100%;
-  border-radius: 8px;
-`;
-
 
 const Recommendation = styled.p`
   font-size: 18px;
