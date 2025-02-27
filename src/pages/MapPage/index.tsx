@@ -70,7 +70,7 @@ const MapPage: React.FC = () => {
 
 
   const submitHandler = () => {
-    navigate('/loading',{state: {...surveyData,location: {latitude: markerRef.current?.position?.lat, longtitude: markerRef.current?.position?.lng} }});
+    navigate('/loading',{state: {...surveyData,location: {latitude: markerRef.current?.position?.lat, longitude: markerRef.current?.position?.lng} }});
   }
 
   return (
