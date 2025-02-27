@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Logo from '../../assets/logo.png';
 
 const SurveyPage: React.FC = () => {
     const navigate = useNavigate();
@@ -85,6 +86,7 @@ const SurveyPage: React.FC = () => {
     return (
       <Container>
         <Content>
+          <img src={Logo} width={80} height={60} />
           <Title>WearCast</Title>
           <Question>어떤 스타일을 원하시나요?</Question>
           <ButtonGroup>
@@ -137,7 +139,6 @@ const Container = styled.div`
   align-items: center;
   min-height: 100vh;
   background-color: #f8f9fa;
-  padding: 20px;
 `;
 
 const Content = styled.div`

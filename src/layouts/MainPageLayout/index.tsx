@@ -1,13 +1,15 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import Logo from '../../assets/logo.png';
 
 const MainPageLayout = () => {
+    const navigate = useNavigate()
+
     return (
         <Container>
             <Header>
-                <img src={Logo} width={30} height={24}/>
-                ClothCast
+                <img src={Logo} width={30} height={24} onClick={()=>navigate('/')}/>
+                <label>ClothCast</label>
             </Header>
             <Outlet />
         </Container>
