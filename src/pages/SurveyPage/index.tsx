@@ -115,18 +115,20 @@ const SurveyPage: React.FC = () => {
               </TabButton>
             ))}
           </TabContainer>
-          <ButtonGroup>
-            {clothes[selectedCategory as keyof typeof clothes].map((item) => (
-              <Button
-                key={item}
-                onClick={() => toggleClothesSelection(categories.find((c) => c.label === selectedCategory)?.value || "", item)}
-                selected={ownedClothes[categories.find((c) => c.label === selectedCategory)?.value || ""]?.[clothesMapping[item]] || false}
-              >
-                {item}
-              </Button>
-            ))}
-          </ButtonGroup>
-  
+          <ButtonDiv>
+            <ButtonGroup>
+              {clothes[selectedCategory as keyof typeof clothes].map((item) => (
+                <Button
+                  key={item}
+                  onClick={() => toggleClothesSelection(categories.find((c) => c.label === selectedCategory)?.value || "", item)}
+                  selected={ownedClothes[categories.find((c) => c.label === selectedCategory)?.value || ""]?.[clothesMapping[item]] || false}
+                >
+                  {item}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </ButtonDiv>
+         
           <SubmitButton onClick={handleSubmit}>완료</SubmitButton>
         </Content>
       </Container>
@@ -166,7 +168,13 @@ const ButtonGroup = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+
+`;
+
+const ButtonDiv = styled.div`
+
+  height: 100px;
 `;
 
 const Button = styled.button<{ selected: boolean }>`
