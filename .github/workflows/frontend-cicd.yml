@@ -86,5 +86,5 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
 
             echo "Running new container on port 80..."
-            docker run -d --name clothcast-frontend -p 80:80 \
+            docker run -d --name clothcast-frontend -p 3000:80 \
               ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
