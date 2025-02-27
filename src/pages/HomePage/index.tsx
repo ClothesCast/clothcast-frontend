@@ -22,7 +22,6 @@ const HomePage: React.FC = () => {
 export default HomePage;
 
 
-
 const Content = styled.div`
   text-align: center;
 `;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useUserLocation from "../../hooks/useUserLocation";
 import { APIProvider } from "@vis.gl/react-google-maps";
@@ -8,7 +8,7 @@ const MapPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const surveyData = location.state || { style: null, owned_clothes: {} };
-  const [requestData, setRequestData] = useState(surveyData);
+  //const [requestData, setRequestData] = useState(surveyData);
   const { currentLocation, getCurrentLocation } = useUserLocation();
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -70,14 +70,14 @@ const MapPage: React.FC = () => {
 
 
   const submitHandler = () => {
-    navigate('/loading',{state: {...requestData,location: {latitude: markerRef.current?.position?.lat, longtitude: markerRef.current?.position?.lng} }});
+    navigate('/loading',{state: {...surveyData,location: {latitude: markerRef.current?.position?.lat, longtitude: markerRef.current?.position?.lng} }});
   }
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <MapContainer ref={mapContainerRef}/>
         <ButtonContainer>
-          <SelectButton onClick={submitHandler}>선택완료</SelectButton>
+          {currentLocation && <SelectButton onClick={submitHandler}>선택완료</SelectButton>}
         </ButtonContainer>
     </APIProvider>
   );
