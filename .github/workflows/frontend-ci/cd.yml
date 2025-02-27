@@ -1,0 +1,60 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - dev  # dev 브랜치에서 push될 때 실행
+    paths:
+      - 'leafy-frontend/**'  # leafy-frontend 내 변경 사항이 있을 때 실행
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest  # 최신 Ubuntu 환경에서 실행
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2  # GitHub 리포지토리 체크아웃
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1  # Docker Buildx 설정
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Docker Hub 사용자 이름
+          password: ${{ secrets.DOCKERHUB_TOKEN }}  # Docker Hub 액세스 토큰
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./leafy-frontend  # Dockerfile이 있는 경로
+          file: ./leafy-frontend/Dockerfile  # Dockerfile 위치
+          push: true  # Docker Hub에 푸시
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:dev
+          platforms: linux/amd64, linux/arm64  # 멀티플랫폼 빌드 지원
+
+  deploy:
+    needs: build-and-push  # 빌드 후 실행
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}  # EC2 퍼블릭 IP
+          username: ubuntu  # EC2 사용자 이름 (Ubuntu 기준)
+          key: ${{ secrets.AWS_SSH_KEY }}  # EC2 SSH 프라이빗 키
+          script: |
+            echo "Stopping existing container..."
+            docker stop leafy-frontend || true
+            docker rm leafy-frontend || true
+
+            echo "Pulling latest image..."
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
+
+            echo "Running new container on port 3000..."
+            docker run -d --name leafy-frontend -p 3000:3000 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
