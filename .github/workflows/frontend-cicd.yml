@@ -60,7 +60,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
-          cache-to: type=inline  # 빌드 캐싱 적용
+          cache-to: type=inline  # 빌드 캐싱
 
   deploy:
     name: Deploy to Dev Server
