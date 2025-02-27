@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PageContainer from "../../components/common/PageContainer";
 import resultData from '../../temp/responseData.json';
 import Button from "../../components/common/Button";
+import SkyWeather from "../../assets/sky_weather.png";
 
 const ResultPage: React.FC = () => {
   //const [resultData, setResultData] = useState(MockResultData)
@@ -13,20 +14,17 @@ const ResultPage: React.FC = () => {
       <Card>
         {resultData &&
         <>
-          <WeatherImage src="/images/weather-sunny.jpg" alt="Weather" />
-          <WeatherInfo>
-            <span>선택한 지역 {resultData.weather?.city.name}의 날씨 :  {resultData.weather?.condition}</span>
-          </WeatherInfo>
+          <WeatherImage src={SkyWeather} alt="Weather" height={180} />
           <Recommendation>
             <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
           </Recommendation>
           <RecommendationBox>
             {resultData.recommendation}
           </RecommendationBox>
-          <Actions>
+          {/* <Actions>
             <Icon>👍</Icon>
             <Icon>👎</Icon>
-          </Actions>
+          </Actions> */}
           </>
         }
           <Button onClick={() => window.location.href = '/'}>돌아가기</Button>
@@ -35,7 +33,7 @@ const ResultPage: React.FC = () => {
     </PageContainer>
   );
 };
-
+        
 export default ResultPage;
 
 const Container = styled.div`
@@ -59,12 +57,6 @@ const WeatherImage = styled.img`
   border-radius: 8px;
 `;
 
-const WeatherInfo = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 12px 0;
-  font-size: 16px;
-`;
 
 const Recommendation = styled.p`
   font-size: 18px;
@@ -86,14 +78,14 @@ const RecommendationBox = styled.div`
   color: black;
 `;
 
-const Actions = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 10px 0;
-`;
+// const Actions = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   gap: 10px;
+//   margin: 10px 0;
+// `;
 
-const Icon = styled.span`
-  font-size: 20px;
-  cursor: pointer;
-`;
+// const Icon = styled.span`
+//   font-size: 20px;
+//   cursor: pointer;
+// `;
