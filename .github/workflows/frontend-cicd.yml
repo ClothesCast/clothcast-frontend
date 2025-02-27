@@ -31,7 +31,4 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}clothcast-frontend:latest
             docker stop clothcast-frontend || true
             docker rm clothcast-frontend || true
-
-            docker run -d --name clothcast-frontend -p 3000:80 \ 
-            -e GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }} \
-            ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
+            docker run -d --name clothcast-frontend -p 3000:80 ${{ secrets.DOCKERHUB_USERNAME }}/clothcast-frontend:latest
