@@ -1,52 +1,49 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../../assets/logo.png';
 import { Sky, Cloud, Clouds, OrbitControls } from '@react-three/drei';
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Group } from "three";
-import { useControls } from "leva"; 
 
 const WeatherScene = () => {
     const ref = useRef<Group>(null!);
 
-    const { color, x, y, z, ...config } = useControls("Cloud Settings", {
-        seed: { value: 1, min: 1, max: 100, step: 1 },
-        segments: { value: 20, min: 1, max: 80, step: 1 },
-        volume: { value: 6, min: 0, max: 100, step: 0.1 },
-        opacity: { value: 0.8, min: 0, max: 1, step: 0.01 },
-        fade: { value: 10, min: 0, max: 400, step: 1 },
-        growth: { value: 4, min: 0, max: 20, step: 1 },
-        speed: { value: 0.1, min: 0, max: 1, step: 0.01 },
-        x: { value: 6, min: 0, max: 100, step: 1 },
-        y: { value: 1, min: 0, max: 100, step: 1 },
-        z: { value: 1, min: 0, max: 100, step: 1 },
-        color: { value: "white" }, // ✅ 컬러 값을 명확히 지정
+    // ✅ 구름 설정
+    const [cloudConfig] = useState({
+        segments: 20,
+        volume: 6,
+        opacity: 0.8,
+        fade: 10,
+        growth: 4,
+        speed: 0.1,
+        x: 6,
+        y: 1,
+        z: 1,
+        color: "white",
     });
 
     useFrame((state) => {
-      if (!ref.current) return;
-      ref.current.rotation.y = Math.cos(state.clock.elapsedTime / 5) / 4;
-      ref.current.rotation.x = Math.sin(state.clock.elapsedTime / 5) / 4;
+        if (!ref.current) return;
+        ref.current.rotation.y = Math.cos(state.clock.elapsedTime / 5) / 4;
+        ref.current.rotation.x = Math.sin(state.clock.elapsedTime / 5) / 4;
     });
 
     return (
-      <>
-        <Sky sunPosition={[100, 40, 100]} />
-        <ambientLight intensity={4.0} />
-        <group ref={ref}>
-          <Clouds limit={400} >
-            <Cloud {...config} 
-              bounds={[x as number, y as number, z as number]} 
-              color={color as string} />
-            <Cloud {...config} bounds={[x as number, y as number, z as number]} color="white" seed={2} position={[15, 0, 0]} />
-            <Cloud {...config} bounds={[x as number, y as number, z as number]} color="white" seed={3} position={[-15, 0, 0]} />
-            <Cloud {...config} bounds={[x as number, y as number, z as number]} color="white" seed={4} position={[0, 0, -12]} />
-            <Cloud {...config} bounds={[x as number, y as number, z as number]} color="white" seed={5} position={[0, 0, 12]} />
-            <Cloud growth={100} color="white" opacity={1.25} seed={0.3} bounds={[200, 200, 200]} volume={200} />
-          </Clouds>
-        </group>
-      </>
+        <>
+            <Sky sunPosition={[100, 40, 100]} />
+            <ambientLight intensity={4.0} />
+            <group ref={ref}>
+                <Clouds limit={400}>
+                    <Cloud {...cloudConfig} bounds={[cloudConfig.x, cloudConfig.y, cloudConfig.z]} />
+                    <Cloud {...cloudConfig} bounds={[cloudConfig.x, cloudConfig.y, cloudConfig.z]} seed={2} position={[15, 0, 0]} />
+                    <Cloud {...cloudConfig} bounds={[cloudConfig.x, cloudConfig.y, cloudConfig.z]} seed={3} position={[-15, 0, 0]} />
+                    <Cloud {...cloudConfig} bounds={[cloudConfig.x, cloudConfig.y, cloudConfig.z]} seed={4} position={[0, 0, -12]} />
+                    <Cloud {...cloudConfig} bounds={[cloudConfig.x, cloudConfig.y, cloudConfig.z]} seed={5} position={[0, 0, 12]} />
+                    <Cloud growth={100} opacity={1.25} seed={0.3} bounds={[200, 200, 200]} volume={200} />
+                </Clouds>
+            </group>
+        </>
     );
 };
 

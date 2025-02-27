@@ -13,6 +13,7 @@
     "@react-three/drei": "^10.0.3",
     "@react-three/fiber": "^9.0.4",
     "@vis.gl/react-google-maps": "^1.5.1",
+    "axios": "^1.8.1",
     "leva": "^0.10.0",
     "lottie-react": "^2.4.1",
     "path": "^0.12.7",
