@@ -5,35 +5,51 @@ import PageContainer from "../../components/common/PageContainer";
 import Button from "../../components/common/Button";
 import { useLocation } from "react-router-dom";
 
+
+interface ResultData {
+  recommendation: string;
+}
+
 const ResultPage: React.FC = () => {
-  //const [resultData, setResultData] = useState(MockResultData)
   const location = useLocation(); 
-  const resultData = location.state;
+  const resultData = location.state as ResultData | null;
+
+  let formattedRecommendation = resultData?.recommendation.replace(/([.!?])\s(?!☁️)/g, "$1\n");
+
+  // 앞뒤 큰따옴표 제거
+  if (formattedRecommendation) {
+    formattedRecommendation = formattedRecommendation.replace(/^"|"$/g, "");
+  }
+
+  // 개행 문자를 <br /> 태그로 변환하여 React에서 정상적으로 렌더링 가능하게 처리
+  const formattedRecommendationWithBreaks = formattedRecommendation
+    ? formattedRecommendation.split("\n").map((line, index) => (
+        <span key={index}>
+          {line}
+          <br />
+        </span>
+      ))
+    : null;
 
   return (
     <PageContainer>
       <Container>
-      <Card>
-        {resultData &&
-        <>
-          <Recommendation>
-            <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
-          </Recommendation>
-          <RecommendationBox>
-            {resultData.recommendation}
-          </RecommendationBox>
-          {/* <Actions>
-            <Icon>👍</Icon>
-            <Icon>👎</Icon>
-          </Actions> */}
-          </>
-        }
+        <Card>
+          {resultData && (
+            <>
+              <Recommendation>
+                <Highlight>ClothCast</Highlight>가 분석한 추천 옷차림은요!
+              </Recommendation>
+              <RecommendationBox>{formattedRecommendationWithBreaks}</RecommendationBox>
+            </>
+          )}
           <Button onClick={() => window.location.href = '/'}>돌아가기</Button>
-      </Card>
-    </Container>
+        </Card>
+      </Container>
     </PageContainer>
   );
 };
+
         
 export default ResultPage;
 
@@ -50,7 +66,6 @@ const Card = styled.div`
   border-radius: 12px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 500px;
-  text-align: center;
 `;
 
 const Recommendation = styled.p`
